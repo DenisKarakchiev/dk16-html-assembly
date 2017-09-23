@@ -1,0 +1,30 @@
+{
+  "name": "dk16-html-assembly",
+  "version": "0.0.1",
+  "description": "Html boilerplate for typical front-end projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DenisKarakchiev/dk16-html-assembly.git"
+  },
+  "keywords": [
+    "front-end",
+    "boilerplate",
+    "dk16",
+    "front-end",
+    "project",
+    "assembly"
+  ],
+  "author": "Denis Karakchiev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DenisKarakchiev/dk16-html-assembly/issues"
+  },
+  "homepage": "https://github.com/DenisKarakchiev/dk16-html-assembly#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
+}
