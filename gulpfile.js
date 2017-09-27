@@ -2,7 +2,7 @@ const gulp         = require('gulp'),
       pcss         = require('gulp-postcss'),
       nestedcss    = require('postcss-nested'),
       autoprefixer = require('autoprefixer'),
-      rename       = require('gulp-rename'),
+      // rename       = require('gulp-rename'),
       concat       = require('gulp-concat'),
       sourcemaps   = require('gulp-sourcemaps'),
       gulpIf       = require('gulp-if'),
@@ -11,7 +11,9 @@ const gulp         = require('gulp'),
       newer        = require('gulp-newer'),
       remember     = require('gulp-remember'),
       path         = require('path'),
-      bs           = require('browser-sync').create()
+      bs           = require('browser-sync').create(),
+      notify       = require('gulp-notify'),
+      mpipe        = require('multipipe')
 
 ;
 
@@ -24,13 +26,21 @@ gulp.task('styles', function() {
     nestedcss,
   ];
 
-  return gulp.src('./frontend/blocks/**/*.pcss', {since: gulp.lastRun('styles')}).
-      pipe(gulpIf(isDev, sourcemaps.init())).//todo: if(true)-sourcemap, else - uglify ()
-      pipe(pcss(processors)).
-      pipe(remember('styles-cached')).
-      pipe(concat('styles.css')).
-      pipe(gulpIf(isDev, sourcemaps.write())).
-      pipe(gulp.dest('./public/dev'));
+  let stream = mpipe(gulp.src('./frontend/blocks/**/*.pcss', {since: gulp.lastRun('styles')}),
+      gulpIf(isDev, sourcemaps.init()), //todo: if(true)-sourcemap, else - uglify ()
+      pcss(processors),
+      remember('styles-cached'),
+      concat('styles.css'),
+      gulpIf(isDev, sourcemaps.write()),
+      gulp.dest('./public/dev'));
+
+  return stream.on('error', notify.onError(function(err) {
+    return {
+      title  : 'styles',
+      message: err.message,
+    };
+  }));
+
 });
 
 gulp.task('clean', function() {
@@ -59,8 +69,8 @@ gulp.task('watch', function() {
 gulp.task('serve', function() {
   bs.init({
     server: {
-      baseDir: '/public/dev'
-    }
+      baseDir: '/public/dev',
+    },
   });
   bs.watch('public/**/*.*').on('change', bs.reload);
 });
