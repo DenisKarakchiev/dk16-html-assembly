@@ -1,3 +1,4 @@
+'use strict';
 const gulp         = require('gulp'),
       pcss         = require('gulp-postcss'),
       nestedcss    = require('postcss-nested'),
@@ -14,8 +15,33 @@ const gulp         = require('gulp'),
       bs           = require('browser-sync').create(),
       notify       = require('gulp-notify'),
       mpipe        = require('multipipe')
-
 ;
+
+//todo: from template-landing
+const params = {
+  out       : 'public',
+  prod      : 'public/prod',
+  htmlSrc   : 'pug/index.pug',
+  levels    : ['xs', 'sm', 'md', 'lg', 'xl'],
+  html      : ['pug/*.pug', 'blocks/**/*.pug'],
+  blocksName: [
+    'example',
+  ],
+  js        : [],
+  json      : 'blocks/**/*.json',
+  css       : [],
+  sass      : [
+    'setting.block/bootstrap.scss',
+    'setting.block/custom.scss',
+  ],
+  images    : [],
+  type      : {
+    css   : 'blocks/**/**/*.css',
+    sass  : 'blocks/**/**/*.scss',
+    js    : 'blocks/**/**/*.js',
+    images: 'blocks/**/**/*.{gif,jpg,png,ico}',
+  },
+};
 
 //to build production use $ NODE_ENV=prod gulp <task>
 const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'dev';
@@ -40,7 +66,6 @@ gulp.task('styles', function() {
       message: err.message,
     };
   }));
-
 });
 
 gulp.task('clean', function() {
@@ -75,4 +100,26 @@ gulp.task('serve', function() {
   bs.watch('public/**/*.*').on('change', bs.reload);
 });
 
+gulp.task('createFirstLevelBlocks', function() {
+  let folder, file, fileJade, fileJSON;
+
+  for (let blockName of params.blocksName) {
+    folder   = `./blocks/${blockName}`; // ./blocks/example
+    file     = `${folder}/${blockName}`;
+    fileJade = `${file}.pug`;
+    fileJSON = `${file}.json`;
+
+    try {
+      fs.mkdirSync(folder);
+      fs.writeFileSync(fileJade, `.${blockName}`);
+      fs.writeFileSync(fileJSON, `{\n  "${blockName}" : {\n\n  }\n}`);
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+});
+
 gulp.task('dev', gulp.series('build', gulp.parallel('watch', 'serve')));
+
+gulp.task('default', gulp.series(''));
