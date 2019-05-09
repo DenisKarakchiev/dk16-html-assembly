@@ -1,3 +1,5 @@
+marked depricated 
+// todo : remove/replace
 # dk16-html-assembly
 Html boilerplate for new typical frontend projects based on gulp tasks
 https://github.com/DenisKarakchiev/dk16-html-assembly
